@@ -3,89 +3,52 @@
 -- MAGIC ## Explore Datasets
 -- MAGIC
 -- MAGIC Explore the datasets we will be using for generating the silver and gold tables.
--- MAGIC
--- MAGIC Relpace `<my_schema>` with the schema your personal schema
 
 -- COMMAND ----------
 
-select * from adrian_tompkins.adrian_tompkins.fact_apj_sales
+SELECT * FROM rtio_dataproducts.mining.hme_time_usage_event
 
 -- COMMAND ----------
 
-select * from adrian_tompkins.adrian_tompkins.fact_apj_sale_items
+SELECT COUNT(*) FROM rtio_dataproducts.mining.hme_time_usage_event
+
+-- COMMAND ----------
+
+SELECT * FROM rtio_dataproducts.mining.hme_time_usage_classification
+
+-- COMMAND ----------
+
+SELECT COUNT(*) FROM rtio_dataproducts.mining.hme_time_usage_classification
 
 -- COMMAND ----------
 
 -- MAGIC %md
 -- MAGIC ## Ask Databricks Assistant to help with creating a Silver Table
 -- MAGIC
--- MAGIC Ask the assistant to help you build a query to identify the top completed orders (highest to lowest order total in dollars) by leveraging the inline assistant within the notebook cell.
+-- MAGIC Below is a query that joins the hme time usage event and classification tables together
 -- MAGIC
--- MAGIC Here's an example prompt to help out:
+-- MAGIC Use the assistant to help tweak the query. This could include
+-- MAGIC  - Selecting only active records
+-- MAGIC  - Selecting a subset of columns
+-- MAGIC  - Changing the columns names
+-- MAGIC  - Translating the code to python (hint, change the cell type to "python")
 -- MAGIC
--- MAGIC **Join the fact_apj_sales and fact_apj_sale_items tables together, calculating the order total as the sum of the product costs. Only consider order states of 'COMPLETED' Order by the total order, descending.**
+-- MAGIC In general, as an end result you will probably want a table that has at least the site, asset id, duration time, event date / time and tum7 display name columns.
 -- MAGIC
+-- MAGIC Once your happy with the result, write your table out to the catalog (template at the bottom of the notebook)
 -- MAGIC
--- MAGIC Or you can use the query below. Make sure you update the catalog and schema name accordingly. 
+-- MAGIC Feel free to explore the `mining` or other schemas in the `rtio_dataproducts` catalog and bulid your own silver tables
 -- MAGIC
--- MAGIC ```
--- MAGIC select 
--- MAGIC     a.ts,
--- MAGIC     a.sale_id,
--- MAGIC     a.order_source,
--- MAGIC     a.order_state,
--- MAGIC     a.unique_customer_id,
--- MAGIC     a.customer_skey,
--- MAGIC     a.store_id,
--- MAGIC     a.slocation_skey,
--- MAGIC     sum(b.product_cost) order_total
--- MAGIC from apjworkshop24.<my_schema>.fact_apj_sales a 
--- MAGIC     inner join apjworkshop24.<my_schema>.fact_apj_sale_items b
--- MAGIC     on a.sale_id = b.sale_id
--- MAGIC where 
--- MAGIC     a.order_state = 'COMPLETED'
--- MAGIC group by
--- MAGIC     all
--- MAGIC order by 
--- MAGIC     order_total desc;
--- MAGIC ```
 
 -- COMMAND ----------
 
-SELECT 
-  s.*,
-  SUM(si.product_cost) AS order_total
-FROM 
-  adrian_tompkins.adrian_tompkins.fact_apj_sales s
-JOIN 
-  adrian_tompkins.adrian_tompkins.fact_apj_sale_items si
-ON 
-  s.sale_id = si.sale_id
-WHERE 
-  s.order_state = 'COMPLETED'
-GROUP BY 
-  s.sale_id, s.ts, s.order_source, s.order_state, s.unique_customer_id, s.store_id, s.customer_skey, s.slocation_skey
-ORDER BY 
-  order_total DESC
+SELECT * 
+FROM rtio_dataproducts.mining.hme_time_usage_event tue 
+JOIN rtio_dataproducts.mining.hme_time_usage_classification tuc
+ON tuc.hme_time_usage_classification_bk = tue.time_usage_classification_bk
 
 -- COMMAND ----------
 
--- MAGIC %python
--- MAGIC fact_apj_sales = spark.table("adrian_tompkins.adrian_tompkins.fact_apj_sales")
--- MAGIC fact_apj_sale_items = spark.table("adrian_tompkins.adrian_tompkins.fact_apj_sale_items")
--- MAGIC
--- MAGIC joined_df = fact_apj_sales.join(fact_apj_sale_items, "sale_id") \
--- MAGIC     .filter(fact_apj_sales.order_state == "COMPLETED") \
--- MAGIC     .groupBy("sale_id") \
--- MAGIC     .agg({"product_cost": "sum"}) \
--- MAGIC     .withColumnRenamed("sum(product_cost)", "order_total") \
--- MAGIC     .orderBy("order_total", ascending=False)
--- MAGIC
--- MAGIC display(joined_df)
-
--- COMMAND ----------
-
-CREATE OR REPLACE TABLE 
-apjworkshop24.<my_schema>.top_orders_silver
+CREATE OR REPLACE TABLE lakehouse_labs.<my_schema>.silver_hme_event
 AS
--- Copy select statement here
+-- Paste SELECT statement here

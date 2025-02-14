@@ -5,7 +5,7 @@ current_user_id = (
     dbutils.notebook.entry_point.getDbutils().notebook().getContext().userName().get()
 )
 
-catalog = "adrian_tompkins"
+catalog = "lakehouse_labs"
 database_name = current_user_id.split("@")[0].replace(".", "_")
 volume = "byo_data"
 

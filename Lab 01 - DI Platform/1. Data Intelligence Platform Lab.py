@@ -23,7 +23,7 @@
 
 # MAGIC %md 
 # MAGIC ## 0. Lab Setup
-# MAGIC Run the `0. Lab 04 Setup` notebook to setup the lab environment
+# MAGIC Run the `0. Data Setup` notebook to setup the lab environment
 
 # COMMAND ----------
 
@@ -35,10 +35,10 @@
 # MAGIC 2. Navigate to the `Catalog Explorer` and find the `byo_data` volume under your catalog and schema
 # MAGIC <br /><img style="float:right" src="https://github.com/adrian-tompkins/apj-workshops-2024/blob/main/Resources/Screenshots/1.2.png?raw=true"/><br />
 # MAGIC 3. Click on the volume name and then click on `"Upload to this volume"` button on the top right corner<br />
-# MAGIC 4. Select the `product_description.tsv` from your local computer and upload to the volume<br />
+# MAGIC 4. Select the `product_description.tsv` file from your local computer and upload to the volume<br />
 # MAGIC 5. After the upload completes, click on the 3 dot button (vertical elipsis) on the far right side of the file name and select `create table`
 # MAGIC <br /><img style="float:right" src="https://github.com/adrian-tompkins/apj-workshops-2024/blob/main/Resources/Screenshots/1.5.png?raw=true"/><br />
-# MAGIC 6. Leave the `create new table` option selected, then select the correct catalog and schema names from the drop down. Keep the table name as `product_description`<br />
+# MAGIC 6. Leave the `create new table` option selected, then select the correct catalog and schema names from the drop down. Leave the table name as product_description<br />
 # MAGIC 7. Examine the available data, then click `create table`<br />
 # MAGIC 8. Once the table creation is complete, click on the `Sample Data` tab in the `Catalog Explorer` to see if the data was loaded correctly and is displayed as expected. <br />
 # MAGIC
@@ -66,8 +66,8 @@
 # MAGIC
 # MAGIC ```
 # MAGIC SELECT p.*, pd.prod_desc
-# MAGIC FROM users.<my_schema>.dim_products AS p
-# MAGIC JOIN users.<my_schema>.product_description AS pd ON p.name = pd.prod_name
+# MAGIC FROM lakehouse_labs.<user_name>.dim_products AS p
+# MAGIC JOIN lakehouse_labs.<user_name>.product_description AS pd ON p.name = pd.prod_name
 # MAGIC ```
 # MAGIC
 # MAGIC 4. Click on the `Save*` button at the top of the SQL Editor, name the query `Products with full Description`, and save it to your Workspace
@@ -75,7 +75,7 @@
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ## 4. Use the Assistant to Build a Silver and Gold Table
+# MAGIC ## 4. Build a Silver and Gold Table
 # MAGIC
 # MAGIC Open the `2.1 Data Prep - Silver` notebook and follow the instructions to create a silver table.
 # MAGIC
@@ -96,13 +96,7 @@
 # MAGIC - Compute: select the DBSQL Serverless cluster
 # MAGIC - Click `Create Task`
 # MAGIC
-# MAGIC 3. Add a second task to the same Workflow, and set it as a conditional check: `if/else condition`
-# MAGIC - Task name: `Status Check`
-# MAGIC - Condition: Click on the link `Browse dynamic values` and copy ``{{tasks.[task_name].result_state}}``
-# MAGIC - Replace the task name accordingly replacing the placeholder with the correct previous task name: `{{tasks.Data_Preparation_Silver.result_state}}`
-# MAGIC - Enter `success` as the condition value
-# MAGIC
-# MAGIC 5. Add a third task to the Workflow and configure it as follows:
+# MAGIC 3. Add a second task to the Workflow and configure it as follows:
 # MAGIC - Task Name `Data_Preparation_Gold` 
 # MAGIC - Type: Notebook
 # MAGIC - Source: Workspace
@@ -110,9 +104,9 @@
 # MAGIC - Compute: select the DBSQL Serverless cluster
 # MAGIC - Click `Create Task`
 # MAGIC
-# MAGIC 6. At the top of the Workflow definition window, rename the Workflow from `New Job [timestamp]` to a meaningful name - i.e.: `Sales Pipeline`
+# MAGIC 4. At the top of the Workflow definition window, rename the Workflow from `New Job [timestamp]` to a meaningful name - i.e.: `Sales Pipeline`
 # MAGIC
-# MAGIC 7. Click `Run Now`, then `View Run` to examine the job execution. Validate the job executed successfully. 
+# MAGIC 5. Click `Run Now`, then `View Run` to examine the job execution. Validate the job executed successfully. 
 
 # COMMAND ----------
 
