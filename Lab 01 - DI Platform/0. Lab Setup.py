@@ -36,6 +36,7 @@ datasets = [
   "dim_customer",
   "dim_locations",
   "dim_products",
+  "fact_apj_sales",
   "fact_apj_sale_items"
 ]
 for dataset in datasets:

@@ -66,8 +66,8 @@
 # MAGIC
 # MAGIC ```
 # MAGIC SELECT p.*, pd.prod_desc
-# MAGIC FROM apjworkshop24.<my_schema>.dim_products AS p
-# MAGIC JOIN apjworkshop24.<my_schema>.product_description AS pd ON p.name = pd.prod_name
+# MAGIC FROM users.<my_schema>.dim_products AS p
+# MAGIC JOIN users.<my_schema>.product_description AS pd ON p.name = pd.prod_name
 # MAGIC ```
 # MAGIC
 # MAGIC 4. Click on the `Save*` button at the top of the SQL Editor, name the query `Products with full Description`, and save it to your Workspace

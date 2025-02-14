@@ -4,15 +4,15 @@
 -- MAGIC
 -- MAGIC Explore the datasets we will be using for generating the silver and gold tables.
 -- MAGIC
--- MAGIC Relpace `<my_schema>` with the schema that was created for you in the setup script; ie `odl_user_xxxxxxx`
+-- MAGIC Relpace `<my_schema>` with the schema your personal schema
 
 -- COMMAND ----------
 
-select * from apjworkshop24.<my_schema>.fact_apj_sales
+select * from adrian_tompkins.adrian_tompkins.fact_apj_sales
 
 -- COMMAND ----------
 
-select * from apjworkshop24.<my_schema>.fact_apj_sale_items
+select * from adrian_tompkins.adrian_tompkins.fact_apj_sale_items
 
 -- COMMAND ----------
 
@@ -52,7 +52,36 @@ select * from apjworkshop24.<my_schema>.fact_apj_sale_items
 
 -- COMMAND ----------
 
--- Prompt AI Assistant Here
+SELECT 
+  s.*,
+  SUM(si.product_cost) AS order_total
+FROM 
+  adrian_tompkins.adrian_tompkins.fact_apj_sales s
+JOIN 
+  adrian_tompkins.adrian_tompkins.fact_apj_sale_items si
+ON 
+  s.sale_id = si.sale_id
+WHERE 
+  s.order_state = 'COMPLETED'
+GROUP BY 
+  s.sale_id, s.ts, s.order_source, s.order_state, s.unique_customer_id, s.store_id, s.customer_skey, s.slocation_skey
+ORDER BY 
+  order_total DESC
+
+-- COMMAND ----------
+
+-- MAGIC %python
+-- MAGIC fact_apj_sales = spark.table("adrian_tompkins.adrian_tompkins.fact_apj_sales")
+-- MAGIC fact_apj_sale_items = spark.table("adrian_tompkins.adrian_tompkins.fact_apj_sale_items")
+-- MAGIC
+-- MAGIC joined_df = fact_apj_sales.join(fact_apj_sale_items, "sale_id") \
+-- MAGIC     .filter(fact_apj_sales.order_state == "COMPLETED") \
+-- MAGIC     .groupBy("sale_id") \
+-- MAGIC     .agg({"product_cost": "sum"}) \
+-- MAGIC     .withColumnRenamed("sum(product_cost)", "order_total") \
+-- MAGIC     .orderBy("order_total", ascending=False)
+-- MAGIC
+-- MAGIC display(joined_df)
 
 -- COMMAND ----------
 
