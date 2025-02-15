@@ -14,33 +14,33 @@
 
 -- COMMAND ----------
 
-CREATE STREAMING LIVE TABLE bronze_sales
+CREATE OR REFRESH STREAMING TABLE bronze_sales
 TBLPROPERTIES ("quality" = "bronze")
 COMMENT "Bronze sales table with all transactions"
 AS 
 SELECT * 
 FROM
-cloud_files('/FileStore/tmp/${current_user_id}/datasets/sales/', "json") 
+cloud_files('/Volumes/lakehouse_labs/${schema_name}/byo_data/datasets/sales/', "json") 
 
 -- COMMAND ----------
 
-CREATE STREAMING LIVE TABLE bronze_stores
+CREATE OR REFRESH STREAMING TABLE bronze_stores
 TBLPROPERTIES ("quality" = "bronze")
 COMMENT "Information about stores"
 AS 
 SELECT *, case when id in ('SYD01', 'MEL01', 'BNE02', 'MEL02', 'PER01', 'CBR01') then 'AUS' when id in ('AKL01', 'AKL02', 'WLG01') then 'NZL' end as country_code 
 FROM  
-cloud_files('/FileStore/tmp/${current_user_id}/datasets/stores/', 'json');
+cloud_files('/Volumes/lakehouse_labs/${schema_name}/byo_data/datasets/stores/', 'json');
 
 -- COMMAND ----------
 
 -- This table is different - it gets data as part of CDC feed from our source system
-CREATE STREAMING LIVE TABLE bronze_products
+CREATE OR REFRESH STREAMING TABLE bronze_products
 TBLPROPERTIES ("quality" = "cdc")
 COMMENT "CDC records for our products dataset"
 AS 
 SELECT * FROM 
-cloud_files('/FileStore/tmp/${current_user_id}/datasets/products_cdc/', "json") ;
+cloud_files('/Volumes/lakehouse_labs/${schema_name}/byo_data/datasets/products_cdc/', "json") ;
 
 -- COMMAND ----------
 
@@ -75,7 +75,8 @@ cloud_files('/FileStore/tmp/${current_user_id}/datasets/products_cdc/', "json") 
 -- MAGIC | ` ` | Alert, but still process |
 -- MAGIC
 -- MAGIC
--- MAGIC Roadmap: `QUARANTINE`
+-- MAGIC Pattern: `QUARANTINE`
+-- MAGIC https://docs.databricks.com/en/delta-live-tables/expectation-patterns.html#quarantine-invalid-data
 
 -- COMMAND ----------
 
@@ -85,7 +86,7 @@ cloud_files('/FileStore/tmp/${current_user_id}/datasets/products_cdc/', "json") 
 
 -- COMMAND ----------
 
-CREATE STREAMING LIVE TABLE silver_sales_clean (
+CREATE OR REFRESH STREAMING TABLE silver_sales_clean (
   CONSTRAINT `Location has to be 5 characters long` EXPECT (length(store_id) = 5),
   CONSTRAINT `Only CANCELED and COMPLETED transactions are allowed` EXPECT (order_state IN ('CANCELED', 'COMPLETED'))
 ) 
@@ -104,7 +105,7 @@ COMMENT "Silver table with clean transaction records" AS
 
 -- COMMAND ----------
 
-CREATE OR REFRESH STREAMING LIVE TABLE silver_sales;
+CREATE OR REFRESH STREAMING TABLE silver_sales;
 
 -- Use APPLY CHANGES INTO to keep only the most rec
 APPLY CHANGES INTO LIVE.silver_sales
@@ -121,7 +122,7 @@ APPLY CHANGES INTO LIVE.silver_sales
 
 -- COMMAND ----------
 
-CREATE STREAMING LIVE TABLE silver_stores  (
+CREATE OR REFRESH STREAMING TABLE silver_stores  (
   CONSTRAINT `Location has to be 5 characters long` EXPECT (length(id) = 5)
   )
   TBLPROPERTIES ("quality" = "silver")
@@ -138,7 +139,7 @@ SELECT * from STREAM(live.bronze_stores)
 
 -- COMMAND ----------
 
-CREATE OR REFRESH STREAMING LIVE TABLE silver_products;
+CREATE OR REFRESH STREAMING TABLE silver_products;
 
 -- Use APPLY CHANGES INTO to keep only the history as well
 APPLY CHANGES INTO LIVE.silver_products
@@ -167,7 +168,7 @@ APPLY CHANGES INTO LIVE.silver_products
 
 -- COMMAND ----------
 
-CREATE LIVE TABLE country_sales AS
+CREATE MATERIALIZED VIEW country_sales AS
 SELECT 
   l.country_code, 
   count(distinct s.id) AS number_of_sales
@@ -186,6 +187,8 @@ GROUP BY l.country_code;
 -- MAGIC
 -- MAGIC ### Advanced option
 -- MAGIC
--- MAGIC Create another gold table, but this time using python. Note - you will need to use a new notebook for it and later add it to your existing DLT pipeline.
+-- MAGIC Create another DLT table using python. Have a go at utilising data within the `rtio_dataproducts.mining` schema.
 -- MAGIC
--- MAGIC You can also create a silver_sales_item table with each row containing information about specific juice sold and get more insights about most popular combinations!
+-- MAGIC If you would like a sample python pipeline, navigate to **Delta Live Tables -> Create Sample Pipeline** and choose python as the langue.
+-- MAGIC
+-- MAGIC Note that items in the `rtio_dataproducts` catalog are exposed as views, so you will not be able to create streaming tables from these, but you can use materialized views.

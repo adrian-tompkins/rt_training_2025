@@ -9,7 +9,7 @@ catalog = "lakehouse_labs"
 database_name = current_user_id.split("@")[0].replace(".", "_")
 volume = "byo_data"
 
-datasets_source = f"/Volumes/adrian_tompkins/training/data"
+datasets_source = f"/Volumes/adrian_tompkins/training/data/dimensions"
 datasets_location = f"/Volumes/{catalog}/{database_name}/{volume}/datasets/"
 
 
@@ -30,11 +30,10 @@ print(f'Dataset files are generated at location: %s' %datasets_location)
 # COMMAND ----------
 
 # move all dimensions to their directories
-dimensions  =['products','stores','users']
+dimensions = ['products', 'stores', 'users']
+
 for dim in dimensions:
-  dbutils.fs.cp(datasets_source, datasets_location, True)
-
-
+    dbutils.fs.cp(f'{datasets_source}/{dim}.json', f'{datasets_location}/{dim}/{dim}.json', True)
 
 # COMMAND ----------
 
