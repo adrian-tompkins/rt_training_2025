@@ -10,7 +10,7 @@ database_name = current_user_id.split("@")[0].replace(".", "_")
 volume = "byo_data"
 
 datasets_source = f"/Volumes/adrian_tompkins/training/data"
-datasets_location = f"/Volumes/{catalog}/{database_name}/{volume}/datasets/"
+# datasets_location = f"/Volumes/{catalog}/{database_name}/{volume}/datasets/"
 
 
 spark.sql(f"USE CATALOG {catalog};")

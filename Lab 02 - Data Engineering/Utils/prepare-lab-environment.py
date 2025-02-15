@@ -1,35 +1,38 @@
 # Databricks notebook source
-# MAGIC %sql
-# MAGIC use catalog apjworkshop24
+import os
+
+current_user_id = (
+    dbutils.notebook.entry_point.getDbutils().notebook().getContext().userName().get()
+)
+
+catalog = "lakehouse_labs"
+database_name = current_user_id.split("@")[0].replace(".", "_")
+volume = "byo_data"
+
+datasets_source = f"/Volumes/adrian_tompkins/training/data"
+datasets_location = f"/Volumes/{catalog}/{database_name}/{volume}/datasets/"
+
+
+spark.sql(f"USE CATALOG {catalog};")
+spark.sql(f"USE SCHEMA {database_name};")
+
+
+# create volume
+spark.sql(f"CREATE VOLUME IF NOT EXISTS {volume}")
 
 # COMMAND ----------
 
 current_user_id = dbutils.notebook.entry_point.getDbutils().notebook().getContext().userName().get()
-datasets_location = f'/FileStore/tmp/{current_user_id}/datasets/'
 
 dbutils.fs.rm(datasets_location, True)
 print(f'Dataset files are generated at location: %s' %datasets_location)
 
 # COMMAND ----------
 
-database_name = current_user_id.split('@')[0].replace('.','_')+'_dlt'
-spark.sql(f'create database if not exists {database_name};')
-spark.sql(f'use {database_name}')
-print(f'Created Database: %s' %database_name)
-
-# COMMAND ----------
-
-# copy dimensions from git
-
-import os
-
-working_dir = '/'.join(os.getcwd().split('/')[0:5])
-git_datasets_location = f'{working_dir}/Datasets/dimensions/'
-
 # move all dimensions to their directories
 dimensions  =['products','stores','users']
 for dim in dimensions:
-  dbutils.fs.cp(f'file:{git_datasets_location}{dim}.json', f'{datasets_location}{dim}/{dim}.json')
+  dbutils.fs.cp(datasets_source, datasets_location, True)
 
 
 
