@@ -133,7 +133,7 @@ def read_as_chunk(batch_iter: Iterator[pd.Series]) -> Iterator[pd.Series]:
     #set llama2 as tokenizer to match our model size (will stay below gte 1024 limit)
     set_global_tokenizer(
       #AutoTokenizer.from_pretrained("hf-internal-testing/llama-tokenizer", cache_dir="/tmp/hf_cache")
-      AutoTokenizer.from_pretrained("/Volumes/adrian_tompkins/rag_chatbot_private_model/respect_survey/llama-tokenizer", cache_dir="/tmp/hf_cache")
+      AutoTokenizer.from_pretrained("/Volumes/adrian_tompkins/ai/hf_assets/llama-tokenizer/", cache_dir="/tmp/hf_cache")
     )
     #Sentence splitter from llama_index to split on sentences
     splitter = SentenceSplitter(chunk_size=500, chunk_overlap=10)
