@@ -35,7 +35,7 @@ vector_search_endpoint = ""
 catalog = ""
 
 # Schema for the rag
-schemea = ""
+schema = ""
 
 # Configure the maximum of results to match against in the vector search index
 max_search_results = 5
@@ -43,35 +43,6 @@ max_search_results = 5
 # Configure the test question for this lab
 test_question = ""
 
-
-# COMMAND ----------
-
-# Name the RAG
-rag_name = "RT Test Decarb Rag"
-
-# Specify the PDF Source
-source_pdf = "/Volumes/adrian_tompkins/rt_training/test_volume"
-
-# Choose the LLM model to use
-llm_model = "databricks-meta-llama-3-3-70b-instruct"
-
-# Choose our embedding model to use
-embedding_model_endpoint_name = "databricks-gte-large-en"
-
-# Specify the Databricks Vector Search Endpoint
-vector_search_endpoint = "one-env-shared-endpoint-3"
-
-# Unity Catalog - Choose The Catalog
-catalog = "adrian_tompkins"
-
-# Schema for the rag
-schema = "rt_training"
-
-# Configure the maximum of results to match against in the vector search index
-max_search_results = 5
-
-# Configure the test question for this lab
-test_question = "What initatives are Rio Tinto undertaking for Decarbonization?"
 
 # COMMAND ----------
 
@@ -161,8 +132,8 @@ def parse_bytes_pypdf(raw_doc_contents_bytes: bytes):
 def read_as_chunk(batch_iter: Iterator[pd.Series]) -> Iterator[pd.Series]:
     #set llama2 as tokenizer to match our model size (will stay below gte 1024 limit)
     set_global_tokenizer(
-      AutoTokenizer.from_pretrained("hf-internal-testing/llama-tokenizer", cache_dir="/tmp/hf_cache")
-      #AutoTokenizer.from_pretrained("/Volumes/adrian_tompkins/rag_chatbot_private_model/respect_survey/#llama-tokenizer", cache_dir="/tmp/hf_cache")
+      #AutoTokenizer.from_pretrained("hf-internal-testing/llama-tokenizer", cache_dir="/tmp/hf_cache")
+      AutoTokenizer.from_pretrained("/Volumes/adrian_tompkins/rag_chatbot_private_model/respect_survey/llama-tokenizer", cache_dir="/tmp/hf_cache")
     )
     #Sentence splitter from llama_index to split on sentences
     splitter = SentenceSplitter(chunk_size=500, chunk_overlap=10)

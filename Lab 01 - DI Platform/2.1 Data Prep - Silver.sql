@@ -50,5 +50,6 @@ ON tuc.hme_time_usage_classification_bk = tue.time_usage_classification_bk
 -- COMMAND ----------
 
 CREATE OR REPLACE TABLE lakehouse_labs.<my_schema>.silver_hme_event
+TBLPROPERTIES ('delta.feature.allowColumnDefaults' = 'enabled')
 AS
 -- Paste SELECT statement here
