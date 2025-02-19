@@ -80,22 +80,6 @@ spark.sql(f"USE SCHEMA {schema}")
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ### Create / Retrieve The Vector Search Client
-
-# COMMAND ----------
-
-from databricks.vector_search.client import VectorSearchClient
-vsc = VectorSearchClient(disable_notice=True)
-
-if not endpoint_exists(vsc, vector_search_endpoint):
-    vsc.create_endpoint(name=vector_search_endpoint, endpoint_type="STANDARD")
-
-wait_for_vs_endpoint_to_be_ready(vsc, vector_search_endpoint)
-print(f"Endpoint named {vector_search_endpoint} is ready.")
-
-# COMMAND ----------
-
-# MAGIC %md
 # MAGIC ### Ingest and chunk the PDF 
 
 # COMMAND ----------
@@ -168,6 +152,8 @@ def read_as_chunk(batch_iter: Iterator[pd.Series]) -> Iterator[pd.Series]:
 
 from databricks.sdk import WorkspaceClient
 import databricks.sdk.service.catalog as c
+from databricks.vector_search.client import VectorSearchClient
+vsc = VectorSearchClient(disable_notice=True)
 
 #The table we'd like to index
 source_table_fullname = f"{catalog}.{schema}.{pdf_chunk_table_name}"
@@ -306,7 +292,7 @@ print(answer)
 with mlflow.start_run(run_name=rag_name_sanitized):
   logged_chain_info = mlflow.langchain.log_model(
           #Note: In classical ML, MLflow works by serializing the model object.  In generative AI, chains often include Python packages that do not serialize.  Here, we use MLflow's new code-based logging, where we saved our chain under the chain notebook and will use this code instead of trying to serialize the object.
-          lc_model=os.path.join(os.getcwd(), 'chain'),  # Chain code file e.g., /path/to/the/chain.py 
+          lc_model=os.path.join(os.getcwd(), 'chain.py'),  # Chain code file e.g., /path/to/the/chain.py 
           model_config=chain_config, # Chain configuration 
           artifact_path="chain", # Required by MLflow, the chain's code/config are saved in this directory
           input_example=input_example,
