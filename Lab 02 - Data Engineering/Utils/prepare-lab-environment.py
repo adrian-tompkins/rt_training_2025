@@ -6,7 +6,7 @@ current_user_id = (
 )
 
 catalog = "lakehouse_labs"
-database_name = current_user_id.split("@")[0].replace(".", "_")
+database_name = current_user_id.split("@")[0].replace(".", "_").replace("-", "_") + "_db_training"
 volume = "byo_data"
 
 datasets_source = f"/Volumes/adrian_tompkins/training/data/dimensions"
