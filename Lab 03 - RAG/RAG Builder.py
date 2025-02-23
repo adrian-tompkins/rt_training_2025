@@ -48,8 +48,6 @@ test_question = ""
 
 # MAGIC %md
 # MAGIC #### Infered and fixed config. Do not change.
-# MAGIC
-# MAGIC TODO: move the llm_prompt_template to the configuration section (requires dynamic building of the "chain" notebook)
 
 # COMMAND ----------
 
