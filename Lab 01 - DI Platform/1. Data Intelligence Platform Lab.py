@@ -101,7 +101,7 @@
 # MAGIC - Type: Notebook
 # MAGIC - Source: Workspace
 # MAGIC - Path: navigate and select the `2.1 Data Prep - Silver` notebook 
-# MAGIC - Compute: select the DBSQL Serverless cluster
+# MAGIC - Compute: leave as `Serverless`
 # MAGIC - Click `Create Task`
 # MAGIC
 # MAGIC 3. Add a second task to the Workflow and configure it as follows:
@@ -109,10 +109,10 @@
 # MAGIC - Type: Notebook
 # MAGIC - Source: Workspace
 # MAGIC - Path: navigate and select the `2.2 Data Prep - Gold` notebook 
-# MAGIC - Compute: select the DBSQL Serverless cluster
+# MAGIC - Compute: leave as `Serverless`
 # MAGIC - Click `Create Task`
 # MAGIC
-# MAGIC 4. At the top of the Workflow definition window, rename the Workflow from `New Job [timestamp]` to a meaningful name - i.e.: `Sales Pipeline`
+# MAGIC 4. At the top of the Workflow definition window, rename the Workflow from `New Job [timestamp]` to a meaningful name - eg: `HME Pipeline`
 # MAGIC
 # MAGIC 5. Click `Run Now`, then `View Run` to examine the job execution. Validate the job executed successfully. 
 
