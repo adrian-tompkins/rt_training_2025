@@ -59,8 +59,8 @@
 # MAGIC
 # MAGIC 1. Open the `SQL Editor` on the Databricks Workspace menu and create a new query tab<br /><br />
 # MAGIC 2. Select the correct catalog and schema at the top drop down menu<br /><br />
-# MAGIC 3. Click on the Databricks Assistant icon on the left hand side of the SQL Editor window and type the prompt: **How can I combine the tables dim_products and product_description together, to add descriptions to my products? The products "id" column is related to the produc description "prod_name" column. Please bring back all columns in the result.**<br />
-# MAGIC As the Databricks Assistant can provide different results every time you aske the same question, go ahead and do a few more prompt iterations to get to a usable query, if necessary. If the Assistant can give you an `INNER JOIN` query where you can replace the column names, go ahead and adjust accordingly: <br /><br />
+# MAGIC 3. Click on the Databricks Assistant icon on the left hand side of the SQL Editor window and type the prompt: **How can I combine the tables dim_products and product_description together, to add descriptions to my products? The products "id" column is related to the product description "prod_name" column. Please bring back all columns in the result.**<br />
+# MAGIC
 # MAGIC
 # MAGIC The final query should be similar to this:
 # MAGIC
@@ -69,13 +69,21 @@
 # MAGIC FROM lakehouse_labs.<user_name>.dim_products AS p
 # MAGIC JOIN lakehouse_labs.<user_name>.product_description AS pd ON p.name = pd.prod_name
 # MAGIC ```
+# MAGIC 4. Try asking the assistant different questions to make alterations to the query, such as changing what columns are selected, or filtering on rows. Try making a query that's syntactically incorrect, and see if the assistant can help you fix it.
 # MAGIC
-# MAGIC 4. Click on the `Save*` button at the top of the SQL Editor, name the query `Products with full Description`, and save it to your Workspace
+# MAGIC 5. To save the query click on the `Save*` button at the top of the SQL Editor, cive the query a name, and save it to your Workspace
 
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ## 4. Build a Silver and Gold Table
+# MAGIC ## 4. Explore Some Rio Tinto Data
+# MAGIC
+# MAGIC Using the SQL Editor, explore some data in the `rtio_dataproducts.mining` schema. What do you find there? We will be using data in this schema for the following tasks
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ## 5. Build a Silver and Gold Table
 # MAGIC
 # MAGIC Open the `2.1 Data Prep - Silver` notebook and follow the instructions to create a silver table.
 # MAGIC
@@ -84,7 +92,7 @@
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ## 5. Create a Workflow to orchestrate your pipeline
+# MAGIC ## 6. Create a Workflow to orchestrate your pipeline
 # MAGIC
 # MAGIC 1. Open the Workflows page in the Databricks Workspace and click the `Create Job` button at the top right corner
 # MAGIC
@@ -116,11 +124,9 @@
 # MAGIC 1. Open the Dashboards from the left menu and click on the Lakeview Dashboards tab
 # MAGIC 2. Click on `Create Lakeview Dashboard` button on the top right corner
 # MAGIC 3. Switch from the Canvas tab to the Data tab
-# MAGIC 4. Click on the Select a table button, select your catalog and schema, then click on the `top_orders_silver` table and wait for the results to show
-# MAGIC 5. Repeat the steps above and add the table `top_stores_gold` and wait for the results to show
+# MAGIC 4. Click on the Select a table button, select your catalog and schema, then click on the your gold table that you created.
+# MAGIC 5. Repeat the steps above for adding addional gold or silver tables.
 # MAGIC 6. Switch back to the Canvas tab and click on the `Add a Visualization` button on the blue bar at the bottom of the Canvas
-# MAGIC 7. Select any position for your visualization and describe what you want to see. Feel free to use some of the prompt suggestions below or try your own ideas based on the available data. 
-# MAGIC - `Show me the split between order source types`
-# MAGIC - `What are the top performing stores?`
+# MAGIC 7. Select any position for your visualization and describe what you want to see
 # MAGIC 8. Add a new visualization and experiment with creating a visual manually without using the GenAI prompt, play with the Visualization configuration
 # MAGIC
