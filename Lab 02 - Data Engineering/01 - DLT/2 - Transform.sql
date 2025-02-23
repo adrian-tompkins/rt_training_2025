@@ -189,6 +189,6 @@ GROUP BY l.country_code;
 -- MAGIC
 -- MAGIC Create another DLT table using python. Have a go at utilising data within the `rtio_dataproducts.mining` schema.
 -- MAGIC
--- MAGIC If you would like a sample python pipeline, navigate to **Delta Live Tables -> Create Sample Pipeline** and choose python as the langue.
+-- MAGIC If you would like a sample python pipeline, navigate to **Pipelines -> Sample ETL Pipeline** and choose python as the language.
 -- MAGIC
 -- MAGIC Note that items in the `rtio_dataproducts` catalog are exposed as views, so you will not be able to create streaming tables from these, but you can use materialized views.
